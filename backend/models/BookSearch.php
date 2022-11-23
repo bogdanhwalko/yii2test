@@ -42,7 +42,7 @@ class BookSearch extends Book
      */
     public function search($params)
     {
-        $query = Book::find();
+        $query = Book::find()->joinWith(['author', 'genres']);
 
         // add conditions that should always apply here
 
@@ -54,22 +54,20 @@ class BookSearch extends Book
             'asc' => ['author.surname' => SORT_ASC, 'author.name' => SORT_ASC],
             'desc' => ['author.surname' => SORT_DESC, 'author.name' => SORT_DESC],
         ];
-
-        $dataProvider->sort->attributes['genres'] = [
+        $dataProvider->sort->attributes['genres.name'] = [
             'asc' => ['genre.name' => SORT_ASC],
             'desc' => ['genre.name' => SORT_DESC],
         ];
 
         if (!($this->load($params) && $this->validate())) {
-            $query->joinWith(['author', 'genres']);
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'author_id' => $this->author_id,
             'date_release' => $this->date_release,
+            'book_genre.genre_id' => $this->genres_id
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

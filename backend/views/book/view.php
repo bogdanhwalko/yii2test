@@ -11,6 +11,7 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Книги', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 <div class="book-view">
 
@@ -37,7 +38,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'author.name',
                 'value' => fn($model) => $model->author->getFullName(),
             ],
-            'img',
+            [
+                'attribute' => 'img',
+                'format' => 'raw',
+                'value' => function($model) {
+                    $url = Yii::$app->urlManager->getHostInfo() . $model->img;
+                    if (!empty($model->img)) {
+                        return Html::img($url, [
+                            'alt' => $model->name,
+                            'width' => '200px'
+                        ]);
+                    }
+
+                    return 'Изображение не загружено';
+                },
+            ],
             [
                 'attribute' => 'date_release',
                 'format' => ['datetime', 'd MMMM, yyyy']

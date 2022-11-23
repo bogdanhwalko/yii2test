@@ -2,12 +2,14 @@
 
 namespace backend\controllers;
 
+use backend\models\UploadForm;
 use common\models\Book;
 use backend\models\BookSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * BookController implements the CRUD actions for Book model.
@@ -78,17 +80,13 @@ class BookController extends Controller
     public function actionCreate()
     {
         $model = new Book();
+        $fileModel = new UploadForm();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
+        $this->save($model, $fileModel, 'Книгу успешно додано!');
 
         return $this->render('create', [
             'model' => $model,
+            'fileModel' => $fileModel,
         ]);
     }
 
@@ -102,15 +100,31 @@ class BookController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $fileModel = new UploadForm();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        $this->save($model, $fileModel, 'Информацию успешно обновлено!');
 
         return $this->render('update', [
             'model' => $model,
+            'fileModel' => $fileModel,
         ]);
     }
+
+
+    private function save(Book $model, UploadForm $fileModel, string $msgSuccess)
+    {
+        if ($model->load($this->request->post()) && $model->validate()) {
+            if ($fileModel->imageFile = UploadedFile::getInstance($fileModel, 'imageFile')) {
+                $model->img = $fileModel->upload();
+            }
+
+            if ($model->save()) {
+                \Yii::$app->session->setFlash('success', $msgSuccess);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+    }
+
 
     /**
      * Deletes an existing Book model.

@@ -1,6 +1,6 @@
 <?php
 Yii::setAlias('@common', dirname(__DIR__));
-Yii::setAlias('@frontend', dirname(dirname(__DIR__)) . '/frontend');
-Yii::setAlias('@backend', dirname(dirname(__DIR__)) . '/backend');
-Yii::setAlias('@console', dirname(dirname(__DIR__)) . '/console');
-Yii::setAlias('@resource', dirname(dirname(__DIR__)) . '/resource');
+Yii::setAlias('@frontend',$_SERVER['DOCUMENT_ROOT'] . '/frontend');
+Yii::setAlias('@backend', $_SERVER['DOCUMENT_ROOT'] . '/backend');
+Yii::setAlias('@console', $_SERVER['DOCUMENT_ROOT'] . '/console');
+

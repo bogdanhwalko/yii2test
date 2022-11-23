@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => Html::activeDropDownList(
                     $searchModel,
-                    'genres',
+                    'genres_id',
                     Genre::getFormatNamesForSelect(),
                     [
                         'prompt' => 'Все жанри',
